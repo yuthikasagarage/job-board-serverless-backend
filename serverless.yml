@@ -1,0 +1,175 @@
+service: job-board-serverless-backend
+
+package:
+  individually: true
+
+custom:
+  stage: devtesting
+  jobTableName: Job-efays4od3nbojliotyq4vm7jhq-devtesting
+  candidateTableName: Candidate-efays4od3nbojliotyq4vm7jhq-devtesting
+  companyTableName: Company-efays4od3nbojliotyq4vm7jhq-devtesting
+  userTableName: User-efays4od3nbojliotyq4vm7jhq-devtesting
+  memorySizes:
+    devtesting: 128
+  memorySize: ${self:custom.memorySizes.${self:custom.stage}}
+  timeout: 3
+
+plugins:
+  - serverless-bundle
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: ${self:custom.stage}
+  region: us-west-2
+  environment:
+    jobTableName: ${self:custom.jobTableName}
+    candidateTableName: ${self:custom.candidateTableName}
+    companyTableName: ${self:custom.companyTableName}
+    stage: ${self:custom.stage}
+    userTableName: ${self:custom.userTableName}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: 
+        - "arn:aws:dynamodb:us-west-2:987808624409:table/Job-efays4od3nbojliotyq4vm7jhq-devtesting"
+        - Fn::Join:
+            - /
+            - - "arn:aws:dynamodb:us-west-2:987808624409:table/Job-efays4od3nbojliotyq4vm7jhq-devtesting"
+              - index
+              - byCompanyId
+        - Fn::Join:
+            - /
+            - - "arn:aws:dynamodb:us-west-2:987808624409:table/Job-efays4od3nbojliotyq4vm7jhq-devtesting"
+              - index
+              - byCompanyHandler
+    
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:us-west-2:987808624409:table/Candidate-efays4od3nbojliotyq4vm7jhq-devtesting"
+    
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: 
+        - "arn:aws:dynamodb:us-west-2:987808624409:table/Company-efays4od3nbojliotyq4vm7jhq-devtesting"
+        - Fn::Join:
+            - /
+            - - "arn:aws:dynamodb:us-west-2:987808624409:table/Company-efays4od3nbojliotyq4vm7jhq-devtesting"
+              - index
+              - byCompanyHandler
+
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: 
+        - "arn:aws:dynamodb:us-west-2:987808624409:table/User-efays4od3nbojliotyq4vm7jhq-devtesting"
+
+functions:
+  getJobByCompanyId:
+    handler: functions/getJobByCompanyId.handler
+    memorySize: ${self:custom.memorySize}
+    timeout: ${self:custom.timeout}
+    events:
+      - http:
+          path: /{companyId}
+          method: get
+          cors: true
+
+  getJobById:
+    handler: functions/getJobById.handler
+    memorySize: ${self:custom.memorySize}
+    timeout: ${self:custom.timeout}
+    events:
+      - http:
+          path: /{companyId}/{jobId}
+          method: get
+          cors: true
+
+  apply:
+    handler: functions/apply.handler
+    memorySize: ${self:custom.memorySize}
+    timeOut: ${self:custom.timeout}
+    events:
+      - http:
+          path: /apply
+          method: post
+          cors: true
+
+  getCompanyById:
+    handler: functions/getCompanyById.handler
+    memorySize: ${self:custom.memorySize}
+    timeout: ${self:custom.timeout}
+    events:
+      - http:
+          path: /company/{companyId}
+          method: get
+          cors: true
+
+  getUserById:
+    handler: functions/getUserById.handler
+    memorySize: ${self:custom.memorySize}
+    timeout: ${self:custom.timeout}
+    events:
+      - http:
+          path: /user/{userId}
+          method: get
+          cors: true
+
+  getCandidateById:
+    handler: functions/getCandidateById.handler
+    memorySize: ${self:custom.memorySize}
+    timeout: ${self:custom.timeout}
+    events:
+      - http:
+          path: /candidate/{candidateId}
+          method: get
+          cors: true
+
+  getJobsByCompanyHandler:
+    handler: functions/getJobsByCompanyHandler.handler
+    memorySize: ${self:custom.memorySize}
+    timeout: ${self:custom.timeout}
+    events:
+      - http:
+          path: /companyHandler/{companyHandler}
+          method: get
+          cors: true
+
+  getCompanyByHandler:
+    handler: functions/getCompanyByHandler.handler
+    memorySize: ${self:custom.memorySize}
+    timeout: ${self:custom.timeout}
+    events:
+      - http:
+          path: /handler/{companyHandler}
+          method: get
+          cors: true

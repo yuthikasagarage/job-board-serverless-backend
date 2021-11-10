@@ -1,0 +1,46 @@
+{
+  "name": "molly-serverless-api-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "serverless.yml",
+  "scripts": {
+    "test": "serverless-bundle test",
+    "deploy": "serverless deploy -v",
+    "deploy:next": "serverless deploy -v --stage next",
+    "deploy:prod": "serverless deploy -v --region us-west-2 --stage prod",
+    "deploy:devtesting": "serverless deploy -v --region us-west-2 --stage devtesting",
+    "commit": "git-cz"
+  },
+  "author": "pasana@smashtaps.com",
+  "license": "",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:SmashTaps/job-board-serverless-backend.git"
+  },
+  "devDependencies": {
+    "cz-conventional-changelog": "^3.2.0",
+    "husky": "^4.2.5",
+    "serverless": "^2.31.0",
+    "serverless-bundle": "^1.2.5",
+    "serverless-domain-manager": "^4.2.0",
+    "serverless-dotenv-plugin": "^2.1.1",
+    "serverless-offline": "^5.3.3"
+  },
+  "dependencies": {
+    "@hapi/joi": "17.1.1",
+    "@sendgrid/mail": "^7.4.6",
+    "global": "^4.4.0",
+    "jwk-to-pem": "^2.0.4",
+    "uuid": "7.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
